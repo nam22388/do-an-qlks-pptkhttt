@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class TestConnection {
     public static Connection getJDBCConnection() {
 
-        String url = "jdbc:mysql://localhost:3306/hotel_management";
+        String url = "jdbc:mysql://localhost:3306/QuanLyKhachSan";
         String user = "dung"; // root
         String password = "12345"; // Các bạn tự đặt ở trong mysql workbench
         try {

@@ -1,16 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
+
 import java.sql.Date;
-/**
- *
- * @author LEGION
- */
+
 public class DanhGiaKhachSan {
+
     private int maDanhGia;
-    private String comment;
+    private String noiDung;
     private Date ngayTao;
     private int maKhachHang;
     private int maKhachSan;
@@ -18,12 +13,12 @@ public class DanhGiaKhachSan {
     public DanhGiaKhachSan() {
     }
 
-    public DanhGiaKhachSan(int maDanhGia, String comment,
+    public DanhGiaKhachSan(int maDanhGia, String noiDung,
                            Date ngayTao, int maKhachHang,
                            int maKhachSan) {
 
         this.maDanhGia = maDanhGia;
-        this.comment = comment;
+        this.noiDung = noiDung;
         this.ngayTao = ngayTao;
         this.maKhachHang = maKhachHang;
         this.maKhachSan = maKhachSan;
@@ -37,12 +32,12 @@ public class DanhGiaKhachSan {
         this.maDanhGia = maDanhGia;
     }
 
-    public String getComment() {
-        return comment;
+    public String getNoiDung() {
+        return noiDung;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNoiDung(String noiDung) {
+        this.noiDung = noiDung;
     }
 
     public Date getNgayTao() {

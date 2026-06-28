@@ -9,15 +9,17 @@ public class KhachSan {
     private String tenKhachSan;
     private String diaChi;
     private String thanhPho;
-
+    private String anh;
+    
     public KhachSan() {
     }
 
-    public KhachSan(int maKhachSan, String tenKhachSan, String diaChi, String thanhPho) {
+    public KhachSan(int maKhachSan, String tenKhachSan, String diaChi, String thanhPho, String anh) {
         this.maKhachSan = maKhachSan;
         this.tenKhachSan = tenKhachSan;
         this.diaChi = diaChi;
         this.thanhPho = thanhPho;
+        this.anh = anh;
     }
 
     public int getMaKhachSan() {
@@ -51,4 +53,13 @@ public class KhachSan {
     public void setThanhPho(String thanhPho) {
         this.thanhPho = thanhPho;
     }
+    
+    public String getAnh() {
+        return anh;
+    }
+
+    public void setAnh(String anh) {
+        this.anh = anh;
+    }
+   
 }
