@@ -1,0 +1,294 @@
+DROP DATABASE IF EXISTS QuanLyKhachSan;
+CREATE DATABASE QuanLyKhachSan;
+USE QuanLyKhachSan;
+
+-- =========================
+-- Bảng khách sạn
+-- =========================
+CREATE TABLE KhachSan (
+    maKhachSan INT PRIMARY KEY AUTO_INCREMENT,
+    tenKhachSan NVARCHAR(50) NOT NULL,
+    diaChi NVARCHAR(50) NOT NULL,
+    thanhPho NVARCHAR(20) NOT NULL,
+    anh NVARCHAR(255)
+);
+
+-- =========================
+-- Bảng loại phòng
+-- =========================
+CREATE TABLE LoaiPhong (
+    maLoaiPhong INT PRIMARY KEY AUTO_INCREMENT,
+    tenLoaiPhong NVARCHAR(50) NOT NULL,
+    giaPhong INT NOT NULL
+);
+
+-- =========================
+-- Bảng phòng
+-- =========================
+CREATE TABLE Phong (
+    maPhong INT PRIMARY KEY AUTO_INCREMENT,
+    soPhong INT,
+    tinhTrangPhong NVARCHAR(50) NOT NULL DEFAULT 'Trống',
+    maLoaiPhong INT,
+    maKhachSan INT,
+
+    CONSTRAINT chk_tinhTrangPhong
+    CHECK (tinhTrangPhong IN ('Trống', 'Đã đặt')) ,
+
+    CONSTRAINT fk_phong_loaiPhong
+    FOREIGN KEY (maLoaiPhong)
+    REFERENCES LoaiPhong(maLoaiPhong),
+
+    CONSTRAINT fk_phong_khachSan
+    FOREIGN KEY (maKhachSan)
+    REFERENCES KhachSan(maKhachSan)
+);
+
+-- =========================
+-- Bảng khách hàng
+-- =========================
+CREATE TABLE KhachHang (
+    maKhachHang INT PRIMARY KEY AUTO_INCREMENT,
+    tenKhachHang NVARCHAR(50) NOT NULL,
+    soCCCD NVARCHAR(50) NOT NULL UNIQUE,
+    soDienThoai NVARCHAR(50) NOT NULL,
+    email NVARCHAR(50) NOT NULL UNIQUE
+);
+
+-- =========================
+-- Bảng user
+-- =========================
+CREATE TABLE `User` (
+    maUser INT PRIMARY KEY AUTO_INCREMENT,
+    tenUser NVARCHAR(50) NOT NULL UNIQUE,
+    matKhau NVARCHAR(50) NOT NULL,
+    maKhachHang INT,
+
+    CONSTRAINT fk_user_khachHang
+    FOREIGN KEY (maKhachHang)
+    REFERENCES KhachHang(maKhachHang)
+);
+
+-- =========================
+-- Bảng phiếu đặt phòng
+-- =========================
+CREATE TABLE PhieuDatPhong (
+    maPhieuDatPhong INT PRIMARY KEY AUTO_INCREMENT,
+    maKhachHang INT,
+    ngayDatPhong DATE NOT NULL,
+    trangThai NVARCHAR(50) NOT NULL DEFAULT 'Đã đặt',
+    ngayDen DATE NOT NULL,
+    ngayDi DATE NOT NULL,
+    maPhong INT,
+    giaDatPhong INT NOT NULL,
+
+    CONSTRAINT chk_trangThaiDatPhong
+    CHECK (trangThai IN ('Đã đặt', 'Đã hủy')) ,
+
+    CONSTRAINT fk_pdp_khachHang
+    FOREIGN KEY (maKhachHang)
+    REFERENCES KhachHang(maKhachHang),
+
+    CONSTRAINT fk_pdp_phong
+    FOREIGN KEY (maPhong)
+    REFERENCES Phong(maPhong)
+);
+
+-- =========================
+-- Bảng tiện ích
+-- =========================
+CREATE TABLE TienIch (
+    maTienIch INT PRIMARY KEY AUTO_INCREMENT,
+    tenTienIch NVARCHAR(50) NOT NULL
+);
+
+-- =========================
+-- Bảng chi tiết tiện ích phòng
+-- =========================
+CREATE TABLE ChiTietTienIchPhong (
+    maPhong INT,
+    maTienIch INT,
+
+    PRIMARY KEY (maPhong, maTienIch),
+
+    CONSTRAINT fk_cttip_phong
+    FOREIGN KEY (maPhong)
+    REFERENCES Phong(maPhong),
+
+    CONSTRAINT fk_cttip_tienIch
+    FOREIGN KEY (maTienIch)
+    REFERENCES TienIch(maTienIch)
+);
+
+-- =========================
+-- Bảng đánh giá khách sạn
+-- =========================
+CREATE TABLE DanhGiaKhachSan (
+    maDanhGia INT PRIMARY KEY AUTO_INCREMENT,
+    noiDung NVARCHAR(255),
+    ngayTao DATE,
+    maKhachHang INT,
+    maKhachSan INT,
+
+    CONSTRAINT fk_dg_khachHang
+    FOREIGN KEY (maKhachHang)
+    REFERENCES KhachHang(maKhachHang),
+
+    CONSTRAINT fk_dg_khachSan
+    FOREIGN KEY (maKhachSan)
+    REFERENCES KhachSan(maKhachSan)
+);
+
+-- =========================
+-- Khách sạn
+-- =========================
+INSERT INTO KhachSan (tenKhachSan, diaChi, thanhPho, anh)
+VALUES
+('Sunrise Hotel', '123 Tran Hung Dao', 'Ha Noi', '1.jpg'),
+('Ocean View Hotel', '45 Vo Nguyen Giap', 'Da Nang', '2.jpg'),
+('Sai Gon Luxury', '88 Nguyen Hue', 'TP HCM', '3.jpg'),
+('Royal Palace', '12 Le Loi', 'Hue', '4.jpg'),
+('Mountain Resort', '9 Xuan Huong', 'Da Lat', '1.jpg');
+
+-- =========================
+-- Loại phòng
+-- =========================
+INSERT INTO LoaiPhong (tenLoaiPhong, giaPhong)
+VALUES
+('Đơn', 500000),
+('Đôi', 800000),
+('VIP', 1500000);
+
+-- =========================
+-- Phòng
+-- =========================
+INSERT INTO Phong (soPhong, maLoaiPhong, maKhachSan)
+VALUES
+-- Hotel 1
+(101,1,1),
+(102,2,1),
+(103,3,1),
+
+-- Hotel 2
+(201,1,2),
+(202,2,2),
+(203,3,2),
+
+-- Hotel 3
+(301,1,3),
+(302,2,3),
+(303,3,3),
+
+-- Hotel 4
+(401,1,4),
+(402,2,4),
+(403,3,4),
+
+-- Hotel 5
+(501,1,5),
+(502,2,5),
+(503,3,5);
+
+-- =========================
+-- Khách hàng
+-- =========================
+INSERT INTO KhachHang
+(tenKhachHang, soCCCD, soDienThoai, email)
+VALUES
+('Nguyen Van An','001111111111','0901234567','an@gmail.com'),
+('Tran Thi Binh','001111111112','0901234568','binh@gmail.com'),
+('Le Van Cuong','001111111113','0901234569','cuong@gmail.com'),
+('Pham Thi Dung','001111111114','0901234570','dung@gmail.com'),
+('Hoang Minh Duc','001111111115','0901234571','duc@gmail.com'),
+('Nguyen Thi Hoa','001111111116','0901234572','hoa@gmail.com');
+
+-- =========================
+-- User
+-- =========================
+INSERT INTO User
+(tenUser, matKhau, maKhachHang)
+VALUES
+('an123','123456',1),
+('binh123','123456',2),
+('cuong123','123456',3),
+('dung123','123456',4),
+('duc123','123456',5),
+('hoa123','123456',6);
+
+
+-- =========================
+-- Phiếu đặt phòng
+-- =========================
+INSERT INTO PhieuDatPhong
+(maKhachHang, ngayDatPhong, trangThai, ngayDen, ngayDi, maPhong, giaDatPhong)
+VALUES
+(1,'2026-06-01','Đã hủy','2026-07-01','2026-07-03',2,800000),
+(2,'2026-06-05','Đã hủy','2026-07-10','2026-07-12',5,800000),
+(3,'2026-06-08','Đã hủy','2026-07-15','2026-07-18',8,800000),
+(4,'2026-06-12','Đã hủy','2026-08-01','2026-08-04',12,1500000),
+(5,'2026-06-20','Đã hủy','2026-08-10','2026-08-13',14,800000);
+
+-- =========================
+-- Tiện ích
+-- =========================
+INSERT INTO TienIch (tenTienIch)
+VALUES
+('Wifi'),
+('Điều hòa'),
+('Tivi'),
+('Tủ lạnh'),
+('Máy sấy tóc'),
+('Ban công'),
+('Bồn tắm'),
+('Ăn sáng miễn phí'),
+('Hồ bơi'),
+('Phòng Gym');
+
+-- =========================
+-- Chi tiết tiện ích phòng
+-- =========================
+INSERT INTO ChiTietTienIchPhong
+(maPhong, maTienIch)
+VALUES
+(1,1),(1,2),(1,3),
+
+(2,1),(2,2),(2,3),(2,8),
+
+(3,1),(3,2),(3,3),(3,4),(3,7),(3,8),
+
+(4,1),(4,2),
+
+(5,1),(5,2),(5,3),(5,6),
+
+(6,1),(6,2),(6,3),(6,4),(6,9),
+
+(7,1),(7,2),(7,8),
+
+(8,1),(8,2),(8,3),(8,5),
+
+(9,1),(9,2),(9,3),(9,4),(9,10),
+
+(10,1),(10,2),(10,8),
+
+(11,1),(11,2),(11,3),
+
+(12,1),(12,2),(12,3),(12,4),(12,7),(12,9),
+
+(13,1),(13,2),
+
+(14,1),(14,2),(14,3),(14,6),
+
+(15,1),(15,2),(15,3),(15,4),(15,8),(15,10);
+
+-- =========================
+-- Đánh giá khách sạn
+-- =========================
+INSERT INTO DanhGiaKhachSan
+(noiDung, ngayTao, maKhachHang, maKhachSan)
+VALUES
+('Khách sạn sạch sẽ, nhân viên nhiệt tình.','2026-06-10',1,1),
+('View biển rất đẹp.','2026-06-11',2,2),
+('Phòng rộng rãi, đáng tiền.','2026-06-12',3,3),
+('Dịch vụ tốt nhưng bãi xe hơi nhỏ.','2026-06-13',4,4),
+('Sẽ quay lại lần sau.','2026-06-14',5,5),
+('Ăn sáng ngon, phòng sạch.','2026-06-15',6,1);
